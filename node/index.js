@@ -1,5 +1,6 @@
 var monitorZkill = require("../src/monitorZkill");
 var setEnvironmentVariables = require("./config/setEnvironmentVariables");
+var idsToNames = require("../src/idsToNames");
 
 setEnvironmentVariables();
 
@@ -9,8 +10,7 @@ console.log(
 			channel: process.env.channel,
 			queueID: process.env.queueID,
 			slackHookURL: process.env.slackHookURL,
-			watchForAlliance: process.env.watchForAlliance,
-			watchForCorp: process.env.watchForCorp,
+			watchFor: process.env.watchFor,
 		})
 );
 
@@ -20,4 +20,4 @@ function watch() {
 	}, 10000);
 }
 
-watch();
+monitorZkill(watch);

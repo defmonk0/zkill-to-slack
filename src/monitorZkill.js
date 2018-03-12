@@ -1,12 +1,14 @@
+var crawlJsArrayForIds = require("./crawlJsArrayForIds");
+var idsToNames = require("./idsToNames");
+var isInvolved = require("./isInvolved");
+var isListed = require("./isListed");
 var request = require("request");
-var Slack = require("slack-node");
-
-slack = new Slack();
+var sendSlackMessage = require("./sendSlackMessage");
 
 var monitorZkill = function(finishingCallback) {
 	console.log("Starting to pull data from zKill RedisQ");
-	slack.setWebhook(process.env.slackHookURL);
 
+	// Set up our headers and options used to hit zKill's RedisQ
 	var headers = {
 		"accept-encoding": "null",
 		Accept: "application/json",
@@ -21,180 +23,125 @@ var monitorZkill = function(finishingCallback) {
 		headers: headers,
 	};
 
+	// Variables to track how many kills we process this round
 	var relatedCount = 0;
 	var unrelatedCount = 0;
 
-	function callback(error, response, body) {
-		if (!error && response.statusCode == 200 && JSON.parse(body).package) {
+	// Function used every time we grab a kill from RedisQ
+	function redisCallback(error, response, body) {
+		if (!error && response && response.statusCode === 200) {
+			// We have a kill, so we should continue
 			killInfo = JSON.parse(body).package;
 
-			var killingPilot = "Unknown";
-			var alliedPilots = [];
-			var pushToSlack = false;
-			var color = "good";
-			var involvedPilotsMessage = "Friendly Pilots Involved";
+			if (isInvolved(killInfo.killmail, process.env.watchFor)) {
+				// We were involved with the kill, so process it
+				// Crawl and receive our ids as needed
+				var ids = crawlJsArrayForIds(killInfo.killmail);
 
-			killInfo.killmail.attackers.forEach(function(attacker) {
-				if (attacker.finalBlow) {
-					if (attacker.character) {
-						killingPilot =
-							attacker.character.name +
-							" (" +
-							attacker.corporation.name +
-							")";
-					} else if (attacker.shipType) {
-						killingPilot = attacker.shipType.name;
-					}
-				}
-				if (
-					(attacker.corporation &&
-						attacker.corporation.name ===
-							process.env.watchForCorp) ||
-					(attacker.alliance &&
-						process.env.watchForAlliance &&
-						attacker.alliance.name === process.env.watchForAlliance)
-				) {
-					pushToSlack = true;
-					console.log(
-						"Found a kill (attacking corp / alliance): " +
-							JSON.stringify(killInfo)
-					);
-					alliedPilots.push(
-						"<https://zkillboard.com/character/" +
-							attacker.character.id +
-							"/|" +
-							attacker.character.name +
-							">"
-					);
-				}
-			});
+				// Get the types and names for those IDs
+				idsToNames(ids, function(map) {
+					// Set up basic data we need to discover
+					var finalBlow = "Unknown";
+					var alliedPilots = [];
+					var color = "#AAAAAA";
+					var involvedPilotsMessage = "Friendly Pilots Involved";
 
-			if (
-				(killInfo.killmail.victim.corporation &&
-					killInfo.killmail.victim.corporation.name ===
-						process.env.watchForCorp) ||
-				(killInfo.killmail.victim.alliance &&
-					process.env.watchForAlliance &&
-					killInfo.killmail.victim.alliance.name ===
-						process.env.watchForAlliance)
-			) {
-				color = "danger";
-				involvedPilotsMessage = "Friendly Fire";
-				pushToSlack = true;
-				console.log(
-					"Found a kill (victim corp / alliance): " +
-						JSON.stringify(killInfo)
-				);
-			}
+					// Iterate through attackers, extracting data
+					killInfo.killmail.attackers.forEach(function(attacker) {
+						// Check if this attacker got the final blow
+						if (attacker.final_blow) {
+							if (attacker.character_id) {
+								finalBlow =
+									map.getParameter(
+										attacker.character_id,
+										"name"
+									) +
+									" (" +
+									map.getParameter(
+										attacker.corporation_id,
+										"name"
+									) +
+									")";
+							} else if (attacker.ship_type_id) {
+								finalBlow = map.getParameter(
+									attacker.ship_type_id,
+									"name"
+								);
+							}
+						}
 
-			if (pushToSlack) {
-				var formattedKillInfo = {
-					fields: [
-						{
-							title: "Ship",
-							value:
-								"<https://zkillboard.com/ship/" +
-								killInfo.killmail.victim.shipType.id +
-								"/|" +
-								killInfo.killmail.victim.shipType.name +
-								">",
-							short: true,
-						},
-						{
-							title: "System",
-							value:
-								"<https://zkillboard.com/system/" +
-								killInfo.killmail.solarSystem.id +
-								"/|" +
-								killInfo.killmail.solarSystem.name +
-								">",
-							short: true,
-						},
-						{
-							title: "Total Damage",
-							value: killInfo.killmail.victim.damageTaken,
-							short: true,
-						},
-						{
-							title: "Pilots Involved",
-							value: killInfo.killmail.attackerCount,
-							short: true,
-						},
-						{
-							title: "Value",
-							value:
-								killInfo.zkb.totalValue.toLocaleString(
-									undefined,
-									{
-										minimumFractionDigits: "2",
-									}
-								) + " ISK",
-							short: true,
-						},
-						{
-							title: "Zkill Points",
-							value: killInfo.zkb.points,
-							short: true,
-						},
-					],
-					title:
-						killingPilot +
-						" killed " +
-						killInfo.killmail.victim.character.name +
-						" (" +
-						killInfo.killmail.victim.corporation.name +
-						")",
-					title_link:
-						"https://zkillboard.com/kill/" + killInfo.killID,
-					thumb_url:
-						"https://imageserver.eveonline.com/Render/" +
-						killInfo.killmail.victim.shipType.id +
-						"_128.png",
-					fallback:
-						killingPilot +
-						" killed " +
-						killInfo.killmail.victim.character.name +
-						" (" +
-						killInfo.killmail.victim.corporation.name +
-						")",
-					color: color,
-					footer:
-						"Zkill-to-Slack - https://github.com/MattCopenhaver/zkill-to-slack",
-				};
+						// Check if this attacker is friendly
+						if (isListed(attacker, process.env.watchFor)) {
+							console.log(
+								"Found friendly as attacker: " +
+									attacker.character_id
+							);
 
-				if (alliedPilots.length > 0) {
-					formattedKillInfo.fields.push({
-						title: involvedPilotsMessage,
-						value: alliedPilots.join(", "),
-						short: false,
+							// Add them to the list of friendlies involved
+							alliedPilots.push(
+								"<https://zkillboard.com/character/" +
+									attacker.character_id +
+									"/|" +
+									map.getParameter(
+										attacker.character_id,
+										"name"
+									) +
+									">"
+							);
+
+							// We have friends on the kill, so mark it green
+							color = "good";
+						}
 					});
-				}
 
-				attachments = [];
-				attachments.push(formattedKillInfo);
+					// Check if the victim was friendly
+					var victim = killInfo.killmail.victim;
+					if (isListed(victim, process.env.watchFor)) {
+						console.log(
+							"Found friendly as victim: " + victim.character_id
+						);
 
-				console.log(
-					"Attachments to Slack: " + JSON.stringify(attachments)
-				);
+						// A friend is the victim, so mark it red
+						color = "danger";
 
-				slack.webhook(
-					{
-						channel: process.env.channel,
-						username: "ZkillBot",
-						attachments: attachments,
-					},
-					function(error, response, body) {
-						console.log(error, response, body);
-
-						relatedCount++;
-						request(options, callback);
+						// Override the involved message, in case someone shot a friend
+						involvedPilotsMessage = "Friendly Fire";
 					}
-				);
+
+					// Actually prep and send our data to slack
+					sendSlackMessage(
+						{
+							alliedPilots: alliedPilots,
+							color: color,
+							finalBlow: finalBlow,
+							map: map,
+							ids: ids,
+							involvedPilotsMessage: involvedPilotsMessage,
+							killInfo: killInfo,
+						},
+						function(error, response, body) {
+							console.log(
+								"Message sent to slack:",
+								error,
+								response.statusCode
+							);
+
+							// Increment our counter and continue asking for kills
+							relatedCount++;
+							// request(options, redisCallback);
+						}
+					);
+				});
 			} else {
+				// We were not involved, so we can early out of this one
+				console.log("Not involved in kill");
+
+				// Increment our counter and continue asking for kills
 				unrelatedCount++;
-				request(options, callback);
+				// request(options, redisCallback);
 			}
 		} else {
+			// RedisQ didn't return us a kill, so we're done
 			console.log("No additional kills in zKill RedisQ");
 			console.log(
 				"Kills processed (related / total): " +
@@ -206,7 +153,8 @@ var monitorZkill = function(finishingCallback) {
 		}
 	}
 
-	request(options, callback);
+	// Start the requests
+	request(options, redisCallback);
 };
 
 module.exports = monitorZkill;
