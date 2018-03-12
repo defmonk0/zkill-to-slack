@@ -128,7 +128,7 @@ var monitorZkill = function(finishingCallback) {
 
 							// Increment our counter and continue asking for kills
 							relatedCount++;
-							// request(options, redisCallback);
+							request(options, redisCallback);
 						}
 					);
 				});
@@ -138,7 +138,7 @@ var monitorZkill = function(finishingCallback) {
 
 				// Increment our counter and continue asking for kills
 				unrelatedCount++;
-				// request(options, redisCallback);
+				request(options, redisCallback);
 			}
 		} else {
 			// RedisQ didn't return us a kill, so we're done
