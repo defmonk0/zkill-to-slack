@@ -20,6 +20,9 @@ var monitorZkill = function (finishingCallback) {
       headers: headers
   };
 
+  var relatedCount = 0;
+  var unrelatedCount = 0;
+
   function callback(error, response, body) {
       if (!error && response.statusCode == 200 && JSON.parse(body).package) {
           killInfo = JSON.parse(body).package;
@@ -114,14 +117,19 @@ var monitorZkill = function (finishingCallback) {
                 attachments: attachments
               }, function (error, response, body) {
               console.log(error, response, body);
+
+              relatedCount++;
               request(options, callback);
               }
             );
           } else {
+            unrelatedCount++;
             request(options, callback);
           }
       } else {
-        console.log('No more kills on Zkill RedisQ...')
+        console.log('No more kills on Zkill RedisQ');
+        console.log("Related kills: " + relatedCount);
+        console.log("Unrelated kills: " + unrelatedCount);
         finishingCallback(null, 'Finished');
       }
   }
