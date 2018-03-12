@@ -9,7 +9,11 @@
 	},
 	"description": "Post kills from Zkillboard's RedisQ to Slack",
 	"homepage": "https://github.com/MattCopenhaver/zkill-to-slack#readme",
-	"keywords": ["eve-online", "slack", "zkillboard"],
+	"keywords": [
+		"eve-online",
+		"slack",
+		"zkillboard"
+	],
 	"license": "MIT",
 	"main": "index.js",
 	"name": "zkill-to-slack",
@@ -18,8 +22,7 @@
 		"url": "git+https://github.com/MattCopenhaver/zkill-to-slack.git"
 	},
 	"scripts": {
-		"predeploy":
-			"cd lambda; zip -r Lambda.zip ../node_modules index.js ../src; cd ..",
+		"predeploy": "cd lambda; zip -r Lambda.zip ../node_modules index.js ../src; cd ..",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"version": "1.0.0"
