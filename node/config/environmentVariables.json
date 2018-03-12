@@ -1,7 +1,8 @@
 {
-  "queueID": "randomQueueId",
-  "slackHookURL": "your testing slack hook url",
-  "channel": "#random",
-  "watchForCorp": "Pandemic Horde Inc.",
-  "watchForAlliance": "Project.Mayhem."
+	"channel": "#killboard",
+	"queueID": "pns-zkill-to-slack-local",
+	"slackHookURL":
+		"https://hooks.slack.com/services/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",
+	"watchForAlliance": "Phoenix Naval Systems",
+	"watchForCorp": "Phoenix Naval Operations"
 }

@@ -1,30 +1,26 @@
 {
-  "name": "zkill-to-slack",
-  "version": "1.0.0",
-  "description": "Post kills from Zkillboard's RedisQ to Slack",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "predeploy": "cd lambda; zip -r Lambda.zip ../node_modules index.js ../src; cd .."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MattCopenhaver/zkill-to-slack.git"
-  },
-  "keywords": [
-    "eve-online",
-    "slack",
-    "zkillboard"
-  ],
-  "author": "Matt Copenhaver",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/MattCopenhaver/zkill-to-slack/issues"
-  },
-  "homepage": "https://github.com/MattCopenhaver/zkill-to-slack#readme",
-  "dependencies": {
-    "comma-it": "0.0.7",
-    "request": "^2.79.0",
-    "slack-node": "^0.1.8"
-  }
+	"author": "Matt Copenhaver",
+	"bugs": {
+		"url": "https://github.com/MattCopenhaver/zkill-to-slack/issues"
+	},
+	"dependencies": {
+		"request": "^2.79.0",
+		"slack-node": "^0.1.8"
+	},
+	"description": "Post kills from Zkillboard's RedisQ to Slack",
+	"homepage": "https://github.com/MattCopenhaver/zkill-to-slack#readme",
+	"keywords": ["eve-online", "slack", "zkillboard"],
+	"license": "MIT",
+	"main": "index.js",
+	"name": "zkill-to-slack",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/MattCopenhaver/zkill-to-slack.git"
+	},
+	"scripts": {
+		"predeploy":
+			"cd lambda; zip -r Lambda.zip ../node_modules index.js ../src; cd ..",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"version": "1.0.0"
 }
