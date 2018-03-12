@@ -1,6 +1,5 @@
 var request = require("request");
 var Slack = require("slack-node");
-var commaIt = require("comma-it");
 
 slack = new Slack();
 
@@ -124,11 +123,12 @@ var monitorZkill = function(finishingCallback) {
 						{
 							title: "Value",
 							value:
-								commaIt(killInfo.zkb.totalValue, {
-									addPrecision: true,
-									thousandSeperator: ",",
-									decimalSeperator: ".",
-								}) + " ISK",
+								killInfo.zkb.totalValue.toLocaleString(
+									undefined,
+									{
+										minimumFractionDigits: "2",
+									}
+								) + " ISK",
 							short: true,
 						},
 						{

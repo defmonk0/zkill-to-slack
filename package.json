@@ -4,7 +4,6 @@
 		"url": "https://github.com/MattCopenhaver/zkill-to-slack/issues"
 	},
 	"dependencies": {
-		"comma-it": "0.0.7",
 		"request": "^2.79.0",
 		"slack-node": "^0.1.8"
 	},
