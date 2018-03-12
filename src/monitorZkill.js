@@ -205,6 +205,7 @@ var monitorZkill = function(finishingCallback) {
 			finishingCallback(null, "Finished");
 		}
 	}
+
 	request(options, callback);
 };
 
