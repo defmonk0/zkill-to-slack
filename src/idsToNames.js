@@ -21,7 +21,7 @@ var idsToNames = function(ids, callback, count = 0) {
 	};
 
 	request(options, function(error, response, body) {
-		if (!error && response && response.statusCode === 200) {
+		if (!error && response.statusCode === 200 && body) {
 			var map = {};
 			for (var i in body) {
 				map[body[i]["id"]] = body[i];

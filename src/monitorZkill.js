@@ -29,7 +29,7 @@ var monitorZkill = function(finishingCallback) {
 
 	// Function used every time we grab a kill from RedisQ
 	function redisCallback(error, response, body) {
-		if (!error && response && response.statusCode === 200) {
+		if (!error && response.statusCode === 200 && JSON.parse(body).package) {
 			// We have a kill, so we should continue
 			killInfo = JSON.parse(body).package;
 
