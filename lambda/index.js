@@ -5,11 +5,16 @@
 var monitorZkill = require("./src/monitorZkill");
 
 exports.handler = (event, context, callback) => {
-	console.log("queueID: " + process.env.queueID);
-	console.log("slackHookURL: " + process.env.slackHookURL);
-	console.log("channel: " + process.env.channel);
-	console.log("watchForCorp: " + process.env.watchForCorp);
-	console.log("watchForAlliance: " + process.env.watchForAlliance);
+	console.log(
+		"Environment: " +
+			JSON.stringify({
+				channel: process.env.channel,
+				queueID: process.env.queueID,
+				slackHookURL: process.env.slackHookURL,
+				watchForAlliance: process.env.watchForAlliance,
+				watchForCorp: process.env.watchForCorp,
+			})
+	);
 
 	monitorZkill(callback);
 };
