@@ -4,7 +4,7 @@ var Slack = require("slack-node");
 slack = new Slack();
 
 var monitorZkill = function(finishingCallback) {
-	console.log("Starting to pull data from Zkill RedisQ");
+	console.log("Starting to pull data from zKill RedisQ");
 	slack.setWebhook(process.env.slackHookURL);
 
 	var headers = {
@@ -56,7 +56,7 @@ var monitorZkill = function(finishingCallback) {
 				) {
 					pushToSlack = true;
 					console.log(
-						"Found a kill (Attacking Corp/Alliance): " +
+						"Found a kill (attacking corp / alliance): " +
 							JSON.stringify(killInfo)
 					);
 					alliedPilots.push(
@@ -82,7 +82,7 @@ var monitorZkill = function(finishingCallback) {
 				involvedPilotsMessage = "Friendly Fire";
 				pushToSlack = true;
 				console.log(
-					"Found a kill (Victim Corp/Alliance): " +
+					"Found a kill (victim corp / alliance): " +
 						JSON.stringify(killInfo)
 				);
 			}
@@ -195,9 +195,13 @@ var monitorZkill = function(finishingCallback) {
 				request(options, callback);
 			}
 		} else {
-			console.log("No more kills on Zkill RedisQ");
-			console.log("Related kills: " + relatedCount);
-			console.log("Unrelated kills: " + unrelatedCount);
+			console.log("No additional kills in zKill RedisQ");
+			console.log(
+				"Kills processed (related / total): " +
+					relatedCount +
+					" / " +
+					(relatedCount + unrelatedCount)
+			);
 			finishingCallback(null, "Finished");
 		}
 	}
