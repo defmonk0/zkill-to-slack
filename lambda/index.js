@@ -1,6 +1,8 @@
 var monitorZkill = require("./src/monitorZkill");
 
 exports.handler = (event, context, callback) => {
+	process.env.watchFor = JSON.parse(process.env.watchFor);
+
 	console.log(
 		"Environment: " +
 			JSON.stringify({
