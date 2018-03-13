@@ -1,29 +1,93 @@
 # zkill-to-slack
-Post kills from [Zkillboard's RedisQ](https://github.com/zKillboard/RedisQ) to Slack
 
-![example post](https://github.com/MattCopenhaver/zkill-to-slack/blob/master/slack%20kill.PNG)
+### Post kills from [zKillboard's RedisQ](https://github.com/zKillboard/RedisQ) to [Slack](https://slack.com/) using local [Node.js](https://nodejs.org/) or [AWS Lambda](https://aws.amazon.com/lambda/).
 
+---
 
-### Setup using your own AWS Lambda:
+#### Installation & Requirements
 
-1. Download the latest release's Lambda.zip.
-2. Upload Lambda.zip to your AWS Lambda Function.
-3. Set the Lambda Environment variables (see [Config and Environment Variables](#config-and-environment-variables)).
-4. Run your Lambda on a schedule (http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/RunLambdaSchedule.html). 5 minutes should work and cost only a few cents per month.
+##### Local Node.js
 
-### Setup using your own server or computer:
+- Clone the git repository. `git clone https://github.com/defmonk0/zkill-to-slack.git`
+- Navigate into the created 'zkill-to-slack' directory. `cd zkill-to-slack`
+- Install all dependencies using [npm](https://www.npmjs.com/). `npm install`
+- Edit the configuration file to meet your needs (see [Environment Variables](#environment-variables)).
+- Run the project using [npm](https://www.npmjs.com/) as well. `npm run start`
+- If you want additional resistance to failure, consider using a node process manager.
 
-1. Clone the repo `git clone https://github.com/MattCopenhaver/zkill-to-slack`.
-2. Navigate into the cloned directory `cd zkill-to-slack`.
-3. `npm install`.
-4. Update the configuration file specific to your needs (see [Config and Environment Variables](#config-and-environment-variables)).
-5. `node node/index.js` This will run infinitely until it is stopped or fails.
-  * There are very rarely failures due malformed or irregular Zkill data, so if you are running this on a server indefinitely, consider running this using a node process manager such as pm2.
+##### AWS Lambda
 
-### Config and Environment Variables:
-* channel: Your Slack channel
-* queueID: A unique identifier for your Zkill RedisQ, so that you do not get duplicate or miss kills.
-* slackHookURL: The URL to your slack for Incoming Webhooks.
-* watchFor: An comma separated of IDs for which you would like to be notified of kills. This can be Alliance, Corporation, or Character IDs.
+###### Using Releases
 
-### Donations Accepted using in-game ISK to Cope Bank
+- Download the latest `Lambda.zip` from the [releases page](https://github.com/defmonk0/zkill-to-slack/releases).
+- Create a new function in [AWS Lambda](https://aws.amazon.com/lambda/).
+	- Use "Author from scratch".
+	- The name is up to you.
+	- Use Node.js 6.10 as your runtime.
+	- The role you use shouldn't need any special permissions.
+- After creating the function, upload your Lambda.zip file.
+	- In the "Function code" section, you can change "Code entry type" drop-down to "Upload a .ZIP file".
+	- Click the button, select your zip file, and then click the "Save" button in the top right of the window.
+- Set up your environment variables to meet your needs (see [Environment Variables](#environment-variables)).
+- Set up a trigger for your new function, or select an existing one.
+	- In the "Designer" section, select "CloudWatch Events" on the left.
+	- In the "Configure triggers" section, select "Create a new rule" from the drop-down (or select an existing one).
+	- Supply a name and description however you want. This will be reusable in the future.
+	- Supply a "Schedule expression" for how often you want the script to run. `rate(5 minutes)`
+	- Click the "Add" button, and then click the "Save" button in the top right of the window.
+
+###### Build From Master
+
+- Clone the git repository. `git clone https://github.com/defmonk0/zkill-to-slack.git`
+- Navigate into the created 'zkill-to-slack' directory. `cd zkill-to-slack`
+- Install all dependencies using [npm](https://www.npmjs.com/). `npm install`
+- Build a Lambda.zip using [npm](https://www.npmjs.com/) as well. It will be created in the "lambda" directory. `npm run build`
+- Continue following the instructions for [Using Releases](#using-releases), ignoring the first step to download a release zip.
+
+---
+
+#### Environment Variables
+
+##### Setup Instructions
+
+###### Local Node.js
+
+Simply edit the JSON file given in the node directory. `./node/config/environmentVariables.json`
+
+###### AWS Lambda
+
+While editing a [Lambda](https://aws.amazon.com/lambda/) function, the "Environment variables" section allows you to supply key-value pairs. Create a key for each of the entries needed, and supply an associated value.
+
+##### Available Variables
+
+- [required] channel (string)
+
+	The slack channel you wish to post to.
+
+	`"#channel-name"`
+
+- [optional] queueID (string)
+
+	A unique identifier for [zKillboard's RedisQ](https://github.com/zKillboard/RedisQ). This is used to >
+	rack the kills you have received so you do not duplicate or miss kills.
+
+	`"your-queue-id"`
+
+- [required] slackHookURL (string)
+
+	The [Webhook URL](https://api.slack.com/incoming-webhooks) for your Slack [Custom Integration](>
+	ttps://slack.com/apps/manage/custom-integrations).
+
+	`"https://hooks.slack.com/services/YOUR/SLACK/HOOK"`
+
+- [required] watchFor (string)
+
+	An comma separated list of IDs for which you would like to be notified of kills. This can be Alliance, Corporation, or Character IDs.
+
+	`"123, 456, 789"`
+
+---
+
+#### Example Slack Post
+
+![Example Slack Post](./slack_kill.png)
