@@ -27,13 +27,16 @@ var monitorZkill = function(finishingCallback) {
 	var relatedCount = 0;
 	var unrelatedCount = 0;
 
+	// Set up our watchFor variable so we don't need to convert it every use
+	var watchFor = process.env.watchFor.split(",").map(item => item.trim());
+
 	// Function used every time we grab a kill from RedisQ
 	function redisCallback(error, response, body) {
 		if (!error && response.statusCode === 200 && JSON.parse(body).package) {
 			// We have a kill, so we should continue
 			killInfo = JSON.parse(body).package;
 
-			if (isInvolved(killInfo.killmail, process.env.watchFor)) {
+			if (isInvolved(killInfo.killmail, watchFor)) {
 				// We were involved with the kill, so process it
 				// Crawl and receive our ids as needed
 				var ids = crawlJsArrayForIds(killInfo.killmail);
@@ -71,7 +74,7 @@ var monitorZkill = function(finishingCallback) {
 						}
 
 						// Check if this attacker is friendly
-						if (isListed(attacker, process.env.watchFor)) {
+						if (isListed(attacker, watchFor)) {
 							console.log(
 								"Found friendly as attacker: " +
 									attacker.character_id
@@ -96,7 +99,7 @@ var monitorZkill = function(finishingCallback) {
 
 					// Check if the victim was friendly
 					var victim = killInfo.killmail.victim;
-					if (isListed(victim, process.env.watchFor)) {
+					if (isListed(victim, watchFor)) {
 						console.log(
 							"Found friendly as victim: " + victim.character_id
 						);

@@ -24,6 +24,6 @@ Post kills from [Zkillboard's RedisQ](https://github.com/zKillboard/RedisQ) to S
 * channel: Your Slack channel
 * queueID: A unique identifier for your Zkill RedisQ, so that you do not get duplicate or miss kills.
 * slackHookURL: The URL to your slack for Incoming Webhooks.
-* watchFor: An array of IDs for which you would like to be notified of kills. This can be Alliance, Corporation, or Character IDs.
+* watchFor: An comma separated of IDs for which you would like to be notified of kills. This can be Alliance, Corporation, or Character IDs.
 
 ### Donations Accepted using in-game ISK to Cope Bank

@@ -3,5 +3,5 @@
 	"queueID": "your-queue-id",
 	"slackHookURL":
 		"https://hooks.slack.com/services/YOUR/SLACK/HOOK",
-	"watchFor": []
+	"watchFor": "123, 456, 789"
 }

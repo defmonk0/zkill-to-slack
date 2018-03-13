@@ -27,7 +27,7 @@
         "url": "git+https://github.com/defmonk0/zkill-to-slack.git"
     },
     "scripts": {
-        "predeploy": "cd lambda; zip -r Lambda.zip ../node_modules index.js ../src; cd ..",
+        "build": "cd lambda; zip -r Lambda.zip ../node_modules index.js ../src; cd ..",
         "start": "node node/index.js"
     },
     "version": "1.1.0"
