@@ -9,7 +9,7 @@ exports.handler = (event, context, callback) => {
 				slackHookURL: process.env.slackHookURL,
 				watchFor: process.env.watchFor
 					.split(",")
-					.map(item => item.trim()),
+					.map(item => parseInt(item.trim())),
 			})
 	);
 

@@ -28,7 +28,9 @@ var monitorZkill = function(finishingCallback) {
 	var unrelatedCount = 0;
 
 	// Set up our watchFor variable so we don't need to convert it every use
-	var watchFor = process.env.watchFor.split(",").map(item => item.trim());
+	var watchFor = process.env.watchFor
+		.split(",")
+		.map(item => parseInt(item.trim()));
 
 	// Function used every time we grab a kill from RedisQ
 	function redisCallback(error, response, body) {
