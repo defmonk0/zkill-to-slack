@@ -2,7 +2,6 @@ var valid = [
 	"alliance_id",
 	"character_id",
 	"corporation_id",
-	"faction_id",
 	"item_type_id",
 	"ship_type_id",
 	"solar_system_id",

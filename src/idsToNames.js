@@ -29,21 +29,13 @@ var idsToNames = function(ids, callback, count = 0) {
 
 			callback(new EveIdMap(map));
 		} else if (count < 5) {
-			console.log(
-				"Failed to get names from ESI: trying again",
-				error,
-				response.statusCode,
-				body.error
-			);
+			console.log("Failed to get names from ESI: trying again");
+			console.log(error, response.statusCode, body.error);
 
 			idsToNames(ids, callback, ++count);
 		} else {
-			console.log(
-				"Failed to get names from ESI: giving up",
-				error,
-				response.statusCode,
-				body.error
-			);
+			console.log("Failed to get names from ESI: giving up");
+			console.log(error, response.statusCode, body.error);
 
 			console.log(JSON.stringify(ids));
 		}

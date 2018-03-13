@@ -6,6 +6,11 @@ var sendSlackMessage = function(data, callback) {
 	// Create a shortcut to accessing our victim
 	var victim = data.killInfo.killmail.victim;
 
+	// Get our victim's name or ship, depending on need.
+	var victimName = data.map.getParameter(victim.character_id, "name")
+		? data.map.getParameter(victim.character_id, "name")
+		: data.map.getParameter(victim.ship_type_id, "name");
+
 	// Create the formatted slack post using the data
 	var formattedKillInfo = {
 		fields: [
@@ -59,7 +64,7 @@ var sendSlackMessage = function(data, callback) {
 		title:
 			data.finalBlow +
 			" killed " +
-			data.map.getParameter(victim.character_id, "name") +
+			victimName +
 			" (" +
 			data.map.getParameter(victim.corporation_id, "name") +
 			")",
@@ -71,12 +76,12 @@ var sendSlackMessage = function(data, callback) {
 		fallback:
 			data.finalBlow +
 			" killed " +
-			data.map.getParameter(victim.character_id, "name") +
+			victimName +
 			" (" +
 			data.map.getParameter(victim.corporation_id, "name") +
 			")",
 		color: data.color,
-		footer: "zKill-to-Slack, github@defmonk0 | github@MattCopenhaver",
+		footer: "zKill-to-Slack: github@defmonk0, github@MattCopenhaver",
 	};
 
 	// Fill in our involved pilots if need be
