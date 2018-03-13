@@ -137,7 +137,7 @@ var monitorZkill = function(finishingCallback) {
 				});
 			} else {
 				// We were not involved, so we can early out of this one
-				console.log("Not involved in kill");
+				console.log("Not involved in kill: " + killInfo.killID);
 
 				// Increment our counter and continue asking for kills
 				unrelatedCount++;

@@ -63,7 +63,7 @@ var sendSlackMessage = function(data, callback) {
 			" (" +
 			data.map.getParameter(victim.corporation_id, "name") +
 			")",
-		title_link: "https://zkillboard.com/kill/" + killInfo.killID,
+		title_link: "https://zkillboard.com/kill/" + data.killInfo.killID,
 		thumb_url:
 			"https://imageserver.eveonline.com/Render/" +
 			victim.ship_type_id +
