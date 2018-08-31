@@ -1,12 +1,10 @@
 # zkill-to-slack
 
-### Post kills from [zKillboard's RedisQ](https://github.com/zKillboard/RedisQ) to [Slack](https://slack.com/) using local [Node.js](https://nodejs.org/) or [AWS Lambda](https://aws.amazon.com/lambda/).
+Post kills from [zKillboard's RedisQ](https://github.com/zKillboard/RedisQ) to [Slack](https://slack.com/) using local [Node.js](https://nodejs.org/) or [AWS Lambda](https://aws.amazon.com/lambda/).
 
----
+## Installation
 
-#### Installation & Requirements
-
-##### Local Node.js
+### Local Node.js
 
 - Clone the git repository. `git clone https://github.com/defmonk0/zkill-to-slack.git`
 - Navigate into the created 'zkill-to-slack' directory. `cd zkill-to-slack`
@@ -15,9 +13,9 @@
 - Run the project using [npm](https://www.npmjs.com/) as well. `npm run start`
 - If you want additional resistance to failure, consider using a node process manager.
 
-##### AWS Lambda
+### AWS Lambda
 
-###### Using Releases
+#### Using Releases
 
 - Download the latest `Lambda.zip` from the [releases page](https://github.com/defmonk0/zkill-to-slack/releases).
 - Create a new function in [AWS Lambda](https://aws.amazon.com/lambda/).
@@ -36,7 +34,7 @@
 	- Supply a "Schedule expression" for how often you want the script to run. `rate(5 minutes)`
 	- Click the "Add" button, and then click the "Save" button in the top right of the window.
 
-###### Build From Master
+#### Build From Master
 
 - Clone the git repository. `git clone https://github.com/defmonk0/zkill-to-slack.git`
 - Navigate into the created 'zkill-to-slack' directory. `cd zkill-to-slack`
@@ -44,21 +42,19 @@
 - Build a Lambda.zip using [npm](https://www.npmjs.com/) as well. It will be created in the "lambda" directory. `npm run build`
 - Continue following the instructions for [Using Releases](#using-releases), ignoring the first step to download a release zip.
 
----
+## Configuration
 
-#### Environment Variables
+### Setup Instructions
 
-##### Setup Instructions
-
-###### Local Node.js
+#### Local Node.js
 
 Simply edit the JSON file given in the node directory. `./node/config/environmentVariables.json`
 
-###### AWS Lambda
+#### AWS Lambda
 
 While editing a [Lambda](https://aws.amazon.com/lambda/) function, the "Environment variables" section allows you to supply key-value pairs. Create a key for each of the entries needed, and supply an associated value.
 
-##### Available Variables
+### Available Variables
 
 - [required] channel (string)
 
@@ -68,15 +64,13 @@ While editing a [Lambda](https://aws.amazon.com/lambda/) function, the "Environm
 
 - [optional] queueID (string)
 
-	A unique identifier for [zKillboard's RedisQ](https://github.com/zKillboard/RedisQ). This is used to >
-	rack the kills you have received so you do not duplicate or miss kills.
+	A unique identifier for [zKillboard's RedisQ](https://github.com/zKillboard/RedisQ). This is used to track who you are so you do not duplicate or miss kills. It can be anything you want, as long as it's unique.
 
 	`"your-queue-id"`
 
 - [required] slackHookURL (string)
 
-	The [Webhook URL](https://api.slack.com/incoming-webhooks) for your Slack [Custom Integration](>
-	ttps://slack.com/apps/manage/custom-integrations).
+	The [Webhook URL](https://api.slack.com/incoming-webhooks) for your Slack [Custom Integration](https://slack.com/apps/manage/custom-integrations).
 
 	`"https://hooks.slack.com/services/YOUR/SLACK/HOOK"`
 
@@ -86,8 +80,6 @@ While editing a [Lambda](https://aws.amazon.com/lambda/) function, the "Environm
 
 	`"123, 456, 789"`
 
----
-
-#### Example Slack Post
+## Example Slack Post
 
 ![Example Slack Post](./slack_kill.png)
