@@ -1,3 +1,4 @@
-node_modules/
+*.sublime*
 *.zip
 .DS_Store
+node_modules/
