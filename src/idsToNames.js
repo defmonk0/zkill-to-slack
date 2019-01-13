@@ -7,7 +7,7 @@ var idsToNames = function(ids, callback, count = 0) {
 	var headers = {
 		"Content-Type": "application/json",
 		"User-Agent":
-			"zKill-To-Slack/1.1.1 <https://github.com/defmonk0/zkill-to-slack>",
+			"zKill-To-Slack/1.3.1 <https://github.com/defmonk0/zkill-to-slack>",
 		Accept: "application/json",
 	};
 
