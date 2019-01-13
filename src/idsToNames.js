@@ -7,7 +7,7 @@ var idsToNames = function(ids, callback, count = 0) {
 	var headers = {
 		"Content-Type": "application/json",
 		"User-Agent":
-			"zKill-To-Slack/1.1.0 <https://github.com/defmonk0/zkill-to-slack>",
+			"zKill-To-Slack/1.1.1 <https://github.com/defmonk0/zkill-to-slack>",
 		Accept: "application/json",
 	};
 
@@ -17,7 +17,7 @@ var idsToNames = function(ids, callback, count = 0) {
 		json: true,
 		method: "POST",
 		url:
-			"https://esi.tech.ccp.is/latest/universe/names/?datasource=tranquility",
+			"https://esi.evetech.net/latest/universe/names/?datasource=tranquility",
 	};
 
 	request(options, function(error, response, body) {
@@ -30,12 +30,12 @@ var idsToNames = function(ids, callback, count = 0) {
 			callback(new EveIdMap(map));
 		} else if (count < 5) {
 			console.log("Failed to get names from ESI: trying again");
-			console.log(error, response.statusCode, body.error);
+			console.log(error, response.statusCode, body);
 
 			idsToNames(ids, callback, ++count);
 		} else {
 			console.log("Failed to get names from ESI: giving up");
-			console.log(error, response.statusCode, body.error);
+			console.log(error, response.statusCode, body);
 
 			console.log(JSON.stringify(ids));
 		}
